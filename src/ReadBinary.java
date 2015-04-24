@@ -1,64 +1,55 @@
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
-import org.math.bit.BitMan;
+
+import org.protocol.header.ReadIP;
 import org.protocol.header.ReadTCP;
 import org.stream.input.StreamByte;
 public class ReadBinary {
 
 	public static void main(String[] args)   {
 		// TODO Auto-generated method stub
-//		File resourceDir = getDirectory("res");
 		ReadBinary c = new ReadBinary();
 	    Class cls = c.getClass();
-		URL url1 = c.getClass().getResource("/reso/test.bin");
-//		System.out.println(url1.getPath());
-		StreamByte s=new StreamByte(url1.getPath());
-		byte[] test=s.getByteIn();
-		for(int i=7;i>=0;i--){
-			System.out.print(BitMan.getBit(test[13],(byte)i));
-
-		}
-//        ByteBuffer bb=ByteBuffer.allocate(4);
-//		byte b1=2;
-//		byte b2=1;
-//		byte b3=0;
-//		byte[] barr=new byte[2];
-//		barr[0]=test[2];
-//		barr[1]=test[3];
-//		System.out.println(BitMan.byteArrtoInt(barr));
-//		byte b4=test[2];
-//		System.out.println(b4);
-//		bb.order(ByteOrder.BIG_ENDIAN);
-//		bb.put(b1);
-//		bb.put(b2);
-//		bb.put(b3);
-//		bb.put(b4);
-//		System.out.println(bb.getShort(0));
-//		System.out.println(bb.getShort(2));
-		ReadTCP tcp1=new ReadTCP(test);
-		System.out.println(tcp1.getSourcePort());
-		System.out.println(tcp1.getDestinationPort());
-		System.out.println(tcp1.getSequenceNumber());
-		System.out.println(tcp1.getAcknowledmentNumber());
-		System.out.println(tcp1.getHeaderLength());
-		System.out.println(tcp1.isFIN());
-		System.out.println(tcp1.isSYN());
-		System.out.println(tcp1.isRST());
-		System.out.println(tcp1.isPSH());
-		System.out.println(tcp1.isACK());
-		System.out.println(tcp1.isURG());
-		System.out.println(tcp1.getWindowSize());
-		byte[] check=tcp1.getOption();
+		URL urlTCP = c.getClass().getResource("/reso/tcphead.bin");
+		StreamByte streamTCP=new StreamByte(urlTCP.getPath());
+		byte[] tcpbyte=streamTCP.getByteIn();
+        ReadTCP tcp=new ReadTCP(tcpbyte);
+		System.out.println("source port ="+tcp.getSourcePort());
+		System.out.println("destination port="+tcp.getDestinationPort());
+		System.out.println("seq number="+tcp.getSequenceNumber());
+		System.out.println("ack number"+tcp.getAcknowledmentNumber());
+		System.out.println("header length"+tcp.getHeaderLength());
+		System.out.println("F="+tcp.isFIN());
+		System.out.println("S="+tcp.isSYN());
+		System.out.println("R="+tcp.isRST());
+		System.out.println("P="+tcp.isPSH());
+		System.out.println("A="+tcp.isACK());
+		System.out.println("U="+tcp.isURG());
+		System.out.println("window size="+tcp.getWindowSize());
 		
-        for(int j=0;j<check.length;j++){
-			for(int i=7;i>=0;i--){
-                System.out.print(BitMan.getBit(check[j],(byte)i));
-			}
-			System.out.println("");
-		}
         
+        URL urlIPheader=c.getClass().getResource("/reso/iphead.bin");
+        StreamByte streamIPheader=new StreamByte(urlIPheader.getPath());
+        byte[] ipHeaderByte=streamIPheader.getByteIn();
+        ReadIP ipheader=new ReadIP(ipHeaderByte);
+		System.out.println("");
+        System.out.println("ip version="+ipheader.getVersion());
+        System.out.println("ip header length="+ipheader.getHeaderLength());
+        System.out.println("total length="+ipheader.getTotalLenth());
+        System.out.println("identification="+ipheader.getIdentification());
+        System.out.println("time to live="+ipheader.getTimeToLive());
+        System.out.println("protocol="+ipheader.getProtocol());
+        System.out.println("checkSum="+ipheader.getHeaderChecksum());
+        System.out.print("source Address=");
+        for(int i=0;i<4;i++){
+        	 System.out.print(ipheader.getSourceAddress()[i]);
+        	 System.out.print(".");
+        }
+        System.out.println("");
+        System.out.print("destination Address=");
+        for(int i=0;i<4;i++){
+        	 System.out.print(ipheader.getDestinationAddress()[i]);
+        	 System.out.print(".");
+        }
 	}
-	
 }

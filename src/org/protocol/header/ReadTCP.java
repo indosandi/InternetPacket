@@ -1,6 +1,11 @@
 package org.protocol.header;
 import org.math.bit.BitMan;
-
+/**
+ * 
+ * @author sandiwibowo
+ *This class will read from TCP header. The member of class is important information
+ *from header displayed in human readable..
+ */
 public class ReadTCP {
 	int sourcePort;
 	int destinationPort;
@@ -22,6 +27,10 @@ public class ReadTCP {
 	int byteSize;
 	int posRead;
 	
+	/**
+	 * Constructor input is byte array
+	 * @param headerByte
+	 */
 	public ReadTCP(byte[] headerByte){
 		this.headerByte=headerByte;
 		posRead=0;
@@ -34,6 +43,7 @@ public class ReadTCP {
 		readUrgPointer();
 		readOption();
 	}
+		
 	private void readPort(){
 		int portSourceSize=2;
 		int portDestSize=2;
@@ -45,6 +55,10 @@ public class ReadTCP {
         posRead+=(portDestSize);
         this.destinationPort=(int)BitMan.byteArrtoInt(btemp);
 	}
+	
+	/**
+	 * read 4 byte sequance and acknowledgement number
+	 */
 	private void readSEQACK(){
 		int seqSize=4;
 		int ackSize=4;
@@ -56,6 +70,9 @@ public class ReadTCP {
 		posRead+=ackSize;
 		this.acknowledmentNumber=(int)BitMan.byteArrtoInt(btemp);
 	}
+	/**
+	 * read header length
+	 */
 	private void readHeadLen(){
 		int hLen=1;
 		byte[] btemp=new byte[hLen];
@@ -63,6 +80,9 @@ public class ReadTCP {
 		posRead+=(hLen);
 		this.headerLength=(int)BitMan.byteArrtoInt(btemp)/4;
 	}
+	/**
+	 * read flag
+	 */
 	private void readFlag(){
 		int refflag=1;
 		byte[] btemp=new byte[refflag];
@@ -111,6 +131,9 @@ public class ReadTCP {
 			this.URG=false;
 		}
 	}
+	/** 
+	 * read window size
+	 */
 	private void readWindow(){
 		int windowSize=2;
 		byte[] btemp=new byte[windowSize];
@@ -131,57 +154,114 @@ public class ReadTCP {
 		posRead+=urgentPointerSize;
 	}
 	private void readOption(){
-		System.out.println(this.headerByte.length);
-		System.out.println("ok");
-		System.out.println(posRead);
 		int optionSize=this.headerByte.length-posRead;
 		this.option=new byte[optionSize];
 		System.arraycopy(headerByte, 0+posRead,this.option, 0, optionSize);
 		posRead+=optionSize;
 	}
 	// ---------------all get --------------
+	/**
+	 * return int source port
+	 * @return
+	 */
 	public int getSourcePort() {
 		return sourcePort;
 	}
+	/**
+	 * return int destination port
+	 * @return
+	 */
 	public int getDestinationPort() {
 		return destinationPort;
 	}
+	/**
+	 * return int sequence number
+	 * @return
+	 */
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
+	/**
+	 * return int acknowledment number
+	 * @return
+	 */
 	public int getAcknowledmentNumber() {
 		return acknowledmentNumber;
 	}
+	/**
+	 * return int header length
+	 * @return
+	 */
 	public int getHeaderLength() {
 		return headerLength;
 	}
+	/**
+	 * return boolean URG
+	 * @return
+	 */
 	public boolean isURG() {
 		return URG;
 	}
+	/**
+	 * return boolean ACK
+	 * @return
+	 */
 	public boolean isACK() {
 		return ACK;
 	}
+	/**
+	 * return  boolean PSH
+	 * @return
+	 */
 	public boolean isPSH() {
 		return PSH;
 	}
+	/**
+	 * return boolean RST
+	 * @return
+	 */
 	public boolean isRST() {
 		return RST;
 	}
+	/**
+	 * return  boolean SYN
+	 * @return
+	 */
 	public boolean isSYN() {
 		return SYN;
 	}
+	/**
+	 * return boolean FIN
+	 * @return
+	 */
 	public boolean isFIN() {
 		return FIN;
 	}
+	/**
+	 *return int window size 
+	 * @return
+	 */
 	public int getWindowSize() {
 		return windowSize;
 	}
+	/**
+	 * return byte array checksum
+	 * @return
+	 */
 	public byte[] getCheckSum() {
 		return checkSum;
 	}
+	/**
+	 * return byte array urgent
+	 * @return
+	 */
 	public byte[] getUrgent() {
 		return urgent;
 	}
+	/**
+	 * return byte array option
+	 * @return
+	 */
 	public byte[] getOption() {
 		return option;
 	}
